@@ -1,9 +1,7 @@
-engines:
+plugins:
   credo:
     enabled: true
     strict: true
-  stylelint:
-    enabled: true
 
 ratings:
   paths:
