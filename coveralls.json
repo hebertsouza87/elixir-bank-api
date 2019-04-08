@@ -1,0 +1,15 @@
+{
+  "custom_stop_words": ["nocov"],
+  "skip_files": [
+    "application.ex",
+    "repo.ex",
+    "gettext.ex",
+    "error_helpers.ex",
+    "router.ex",
+    "bank_api.ex",
+    "bank_api_web.ex",
+    "lib/bank_api_web/endpoint.ex",
+    "priv",
+    "test"
+  ]
+}
