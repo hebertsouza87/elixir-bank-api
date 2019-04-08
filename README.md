@@ -1,6 +1,7 @@
 # BankApi
 
 [![Build Status](https://travis-ci.com/hebertsouza87/elixir-bank-api.svg?branch=master)](https://travis-ci.com/hebertsouza87/elixir-bank-api)
+[![Coverage Status](https://coveralls.io/repos/github/hebertsouza87/elixir-bank-api/badge.svg)](https://coveralls.io/github/hebertsouza87/elixir-bank-api)
 
 To start your Phoenix server:
 

@@ -1,0 +1,11 @@
+engines:
+  credo:
+    enabled: true
+    strict: true
+  stylelint:
+    enabled: true
+
+ratings:
+  paths:
+    - "**.ex"
+    - "**.exs"
