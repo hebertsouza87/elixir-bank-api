@@ -45,6 +45,7 @@ defmodule BankApi.MixProject do
       {:exnumerator, "~> 1.3.0"},
       {:bcrypt_elixir, "~> 2.0"},
       {:excoveralls, "~> 0.10", only: :test},
+      {:timex, "~> 3.1", only: :test},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
     ]
   end
