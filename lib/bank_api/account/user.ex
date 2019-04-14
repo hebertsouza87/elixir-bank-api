@@ -1,4 +1,4 @@
-defmodule BankApi.Account.Users do
+defmodule BankApi.Account.User do
   @moduledoc """
   Model to represent an User.
   """
@@ -6,22 +6,22 @@ defmodule BankApi.Account.Users do
 
   import Ecto.Changeset
 
-  alias BankApi.Account.Accounts
-  alias BankApi.Account.Users
+  alias BankApi.Account.Account
+  alias BankApi.Account.User
 
   schema "users" do
     field :name, :string
     field :email, :string
     field :document, :string
     field :password, :string
-    has_one(:account, Accounts)
+    has_one(:account, Account)
 
     timestamps()
   end
 
   @required_fields ~w(name email document password)a
 
-  def changeset(%Users{} = user, attrs \\ %{}) do
+  def changeset(%User{} = user, attrs \\ %{}) do
     user
     |> cast(attrs, [:name, :email, :document, :password])
     |> validate_required(@required_fields)

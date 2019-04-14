@@ -1,10 +1,10 @@
 defmodule BankApiWeb.AccountView do
   use BankApiWeb, :view
 
-  alias BankApi.Account.Accounts
-  alias BankApi.Account.Users
+  alias BankApi.Account.Account
+  alias BankApi.Account.User
 
-  def render("register.json", %Accounts{} = account) do
+  def render("register.json", %Account{} = account) do
     %{
       number: account.number,
       status: account.status,
@@ -15,14 +15,14 @@ defmodule BankApiWeb.AccountView do
     }
   end
 
-  def render("activate.json", %Accounts{} = account) do
+  def render("activate.json", %Account{} = account) do
     %{
       number: account.number,
       status: account.status
     }
   end
 
-  def render("show.json", %Users{} = user) do
+  def render("show.json", %User{} = user) do
     %{
       id: user.id,
       account: %{

@@ -1,40 +1,66 @@
 defmodule BankApi.Banking.Transactions do
   @moduledoc """
-  Model to represent a Transaction.
+  The SignIn context of a transaction.
   """
-  use BankApi.Schema
 
-  import Ecto.Changeset
+  require Logger
 
-  alias BankApi.Account.Accounts
-  alias BankApi.Banking.Transactions
+  alias BankApi.Account.Account
+  alias BankApi.Banking.TransactionQueries
 
-  defmodule Type do
-    @moduledoc """
-    Enum for an transaction type.
-    """
-
-    use Exnumerator, values: ["DEPOSIT", "WITHDRAW", "TRANSFER"]
+  def deposit(nil, _) do
+    nil
   end
 
-  schema "transactions" do
-    field :amount, Money.Ecto.Amount.Type
-    field :type, Type
-    has_one :source, Accounts
-    has_one :destination, Accounts
-    belongs_to :account, Accounts
+  def deposit(%Account{} = account, amount) do
+    amount = Money.new(amount)
+    if Money.zero?(amount) do
+      raise "No value to deposit"
+    end
 
-    timestamps()
+    if !Money.positive?(amount) do
+      raise "Can`t deposit a negative value"
+    end
+
+    Logger.info("Making a deposit of #{Money.to_string(amount)} in account_id #{account.id}.")
+
+    TransactionQueries.insert(
+      %{
+        account: account,
+        amount: amount,
+        type: "DEPOSIT"
+      }
+    )
   end
 
-  @required_fields ~w(amount type account)a
+  def withdraw(%Account{} = account, amount) do
+    amount = Money.new(amount)
+    if Money.zero?(amount) do
+      raise "No value to withdraw"
+    end
 
-  def changeset(%Transactions{} = transaction, attrs \\ %{}) do
-    %{account: account} = attrs
+    if Money.positive?(amount) do
+      raise "Can`t withdraw a positive value"
+    end
 
-    transaction
-    |> cast(attrs, [:amount, :type])
-    |> put_assoc(:account, account)
-    |> validate_required(@required_fields)
+    account_amount = account.id
+                     |> TransactionQueries.get_amount_in_account()
+                     |> Money.new()
+
+    if amount
+       |> Money.abs()
+       |> Money.compare(account_amount) == 1 do
+      raise "Can`t withdraw more then you have"
+    end
+
+    Logger.info("Making a withdraw of #{Money.to_string(amount)} in account_id #{account.id}.")
+
+    TransactionQueries.insert(
+      %{
+        account: account,
+        amount: amount,
+        type: "WITHDRAW"
+      }
+    )
   end
 end

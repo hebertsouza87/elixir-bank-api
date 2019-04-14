@@ -3,12 +3,12 @@ defmodule BankApi.Account.UserQueries do
   Module to organize queries on "users" table
   """
 
-  alias BankApi.Account.Users
+  alias BankApi.Account.User
   alias BankApi.Repo
 
   def create(attrs \\ %{}) do
-    %Users{}
-    |> Users.changeset(attrs)
+    %User{}
+    |> User.changeset(attrs)
     |> Repo.insert!()
   end
 end

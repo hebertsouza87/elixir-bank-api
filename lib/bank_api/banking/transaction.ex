@@ -1,23 +1,40 @@
 defmodule BankApi.Banking.Transaction do
   @moduledoc """
-  The SignIn context of a transaction.
+  Model to represent a Transaction.
   """
+  use BankApi.Schema
 
-  alias BankApi.Account.AccountQueries
-  alias BankApi.Account.Accounts
-  alias BankApi.Banking.TransactionQueries
+  import Ecto.Changeset
 
-  def deposit(nil, _) do
-    nil
+  alias BankApi.Account.Account
+  alias BankApi.Banking.Transaction
+
+  defmodule Type do
+    @moduledoc """
+    Enum for an transaction type.
+    """
+
+    use Exnumerator, values: ["DEPOSIT", "WITHDRAW", "TRANSFER"]
   end
 
-  def deposit(%Accounts{} = account, amount) do
-    TransactionQueries.insert(
-      %{
-        account: account,
-        amount: Money.new(amount),
-        type: "DEPOSIT"
-      }
-    )
+  schema "transactions" do
+    field :amount, Money.Ecto.Amount.Type
+    field :type, Type
+    field :source_account, :string
+    field :destination_account, :string
+    belongs_to :account, Account
+
+    timestamps()
+  end
+
+  @required_fields ~w(amount type account)a
+
+  def changeset(%Transaction{} = transaction, attrs \\ %{}) do
+    %{account: account} = attrs
+
+    transaction
+    |> cast(attrs, [:amount, :type])
+    |> put_assoc(:account, account)
+    |> validate_required(@required_fields)
   end
 end

@@ -1,20 +1,42 @@
 defmodule BankApi.Account.Account do
   @moduledoc """
-  The SignIn context of account.
+  Model to represent a Bank Account.
   """
+  use BankApi.Schema
 
-  alias BankApi.Account.AccountQueries
+  import Ecto.Changeset
+
+  alias BankApi.Account.Account
+  alias BankApi.Account.User
   alias BankApi.Banking.Transaction
-  alias BankApi.Banking.Transactions
 
-  def activate(account_number) do
-    account_number
-    |> AccountQueries.set_active()
-    |> Transaction.deposit(100_000)
-    |> get_account()
+  defmodule Status do
+    @moduledoc """
+    Enum for an account status.
+    """
+
+    use Exnumerator, values: ["CREATED", "ACTIVE", "REMOVED"]
   end
 
-  defp get_account(%Transactions{} = transaction) do
-    transaction.account
+  schema "accounts" do
+    field :number, :string
+    field :status, Status
+    belongs_to :user, User
+    has_many(:transactions, Transaction)
+
+    timestamps()
+  end
+
+  @required_fields ~w(number user status)a
+
+  def changeset(%Account{} = account, attrs \\ %{}) do
+    %{user: user} = attrs
+
+    account
+    |> cast(attrs, [:number, :status])
+    |> put_assoc(:user, user)
+    |> validate_required(@required_fields)
+    |> unique_constraint(:number)
+    |> unique_constraint(:user)
   end
 end

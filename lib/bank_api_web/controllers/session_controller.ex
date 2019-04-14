@@ -13,8 +13,7 @@ defmodule BankApiWeb.SessionController do
       nil -> conn
              |> send_resp(403, "")
       account -> conn
-                 |> put_session(:user_id, account.user.id)
-                 |> put_session(:account_number, account.number)
+                 |> put_session(:account_id, account.id)
                  |> send_resp(202, "")
     end
   end
