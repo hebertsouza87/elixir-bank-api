@@ -1,6 +1,6 @@
 defmodule BankApi.Account.SignUp do
   @moduledoc """
-  Module to organize the sign up logic
+  The SignUp context of account.
   """
 
   alias BankApi.Account.AccountQueries
