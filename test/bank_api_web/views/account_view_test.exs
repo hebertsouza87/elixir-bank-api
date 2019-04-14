@@ -3,18 +3,18 @@ defmodule BankApiWeb.AccountViewTest do
 
   import Phoenix.View
 
-  alias BankApi.Account.Accounts
-  alias BankApi.Account.Users
+  alias BankApi.Account.Account
+  alias BankApi.Account.User
 
   test "register.json" do
     now = Timex.now("America/Sao_Paulo")
-    account = %Accounts{
+    account = %Account{
       id: 2,
       inserted_at: now,
       number: "00000001",
       status: "CREATED",
       updated_at: now,
-      user: %Users{
+      user: %User{
         document: "11122233344",
         email: "teste@teste.com",
         id: 2,
@@ -26,12 +26,14 @@ defmodule BankApiWeb.AccountViewTest do
       user_id: 1
     }
 
-    assert render(BankApiWeb.AccountView, "register.json", account) == %{
-             account: %{
-               number: "00000001"
-             },
-             document: "11122233344",
-             email: "teste@teste.com"
-           }
+    assert render(BankApiWeb.AccountView, "register.json", account) ==
+             %{
+               status: "CREATED",
+               number: "00000001",
+               user: %{
+                 document: "11122233344",
+                 email: "teste@teste.com"
+               }
+             }
   end
 end

@@ -4,6 +4,8 @@ defmodule BankApiWeb.AccountController do
   alias BankApi.Account.Accounts
   alias BankApi.Account.SignUp
 
+  action_fallback(BankApiWeb.FallbackController)
+
   def register(conn, params) do
     render(conn, "register.json", SignUp.create_account(params))
   end

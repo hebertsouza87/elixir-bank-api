@@ -12,8 +12,10 @@ defmodule BankApiWeb.Plugs.SetAccount do
   end
 
   def call(conn, _params) do
-    account_id = get_session(conn, :account_id)
-    account = AccountQueries.get_active_by_id!(account_id)
+    account =
+      conn
+      |> get_session(:account_id)
+      |> AccountQueries.get_active_by_id!()
 
     %Timber.Contexts.UserContext{id: account.user.id, name: account.user.name, email: account.user.email}
     |> Timber.add_context()
