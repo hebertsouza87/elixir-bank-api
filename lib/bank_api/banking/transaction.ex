@@ -33,7 +33,7 @@ defmodule BankApi.Banking.Transaction do
     %{account: account} = attrs
 
     transaction
-    |> cast(attrs, [:amount, :type])
+    |> cast(attrs, [:amount, :type, :source_account, :destination_account])
     |> put_assoc(:account, account)
     |> validate_required(@required_fields)
   end

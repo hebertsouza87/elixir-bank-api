@@ -9,6 +9,6 @@ defmodule BankApi.Account.UserQueries do
   def create(attrs \\ %{}) do
     %User{}
     |> User.changeset(attrs)
-    |> Repo.insert!()
+    |> Repo.insert()
   end
 end

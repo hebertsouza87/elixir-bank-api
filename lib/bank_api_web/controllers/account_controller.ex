@@ -7,10 +7,14 @@ defmodule BankApiWeb.AccountController do
   action_fallback(BankApiWeb.FallbackController)
 
   def register(conn, params) do
-    render(conn, "register.json", SignUp.create_account(params))
+    with {:ok, account} <- SignUp.create_account(params) do
+      render(conn, "register.json", account)
+    end
   end
 
   def activate(conn, %{"account" => account_number}) do
-    render(conn, "activate.json", Accounts.activate(account_number))
+    with {:ok, account} <- Accounts.activate(account_number) do
+      render(conn, "activate.json", account)
+    end
   end
 end

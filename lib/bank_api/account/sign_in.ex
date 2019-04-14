@@ -15,7 +15,7 @@ defmodule BankApi.Account.SignIn do
     nil
   end
 
-  defp validate_password(account, password) do
+  defp validate_password({:ok, account}, password) do
     if Bcrypt.verify_pass(password, account.user.password) do
       account
     else

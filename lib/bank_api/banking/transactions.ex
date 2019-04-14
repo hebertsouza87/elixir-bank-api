@@ -7,6 +7,7 @@ defmodule BankApi.Banking.Transactions do
 
   alias BankApi.Account.Account
   alias BankApi.Banking.TransactionQueries
+  alias BankApi.Account.AccountQueries
 
   def deposit(nil, _) do
     nil
@@ -28,11 +29,41 @@ defmodule BankApi.Banking.Transactions do
   end
   end
 
+  def transfer(%Account{} = account, amount, destination_account) do
+    deposit_amount = Money.new(amount)
+    withdraw_amount = Money.neg(deposit_amount)
+
+    with {:ok, _} <- AccountQueries.find_active_by_number(destination_account),
+         {:ok, amount} <- valid_withdraw(withdraw_amount, account),
+         {:ok, transaction} <- TransactionQueries.insert(
+           %{
+             account: account,
+             amount: withdraw_amount,
+             type: "TRANSFER",
+             destination_account: destination_account
+           }
+         ),
+         {:ok, _} <- TransactionQueries.insert(
+           %{
+             account: account,
+             amount: deposit_amount,
+             type: "TRANSFER",
+             source_account: account.number,
+           }
+         ) do
+      Logger.info(
+        "Transfer of #{Money.to_string(amount)} in account_id #{account.id} to account_number #{destination_account}."
+      )
+      {:ok, transaction}
+    end
+  end
+
   defp valid_deposit(amount) do
-    cond do
-      Money.zero?(amount) -> {:error, {:amount, "No value to deposit"}}
-      !Money.positive?(amount) -> {:error, {:amount, "Can`t deposit a negative value"}}
-      true -> {:ok, amount}
+    if Money.zero?(amount) or
+       !Money.positive?(amount) do
+      {:error, {:amount, "Invalid amount"}}
+    else
+      {:ok, amount}
     end
   end
 
@@ -53,13 +84,14 @@ defmodule BankApi.Banking.Transactions do
     end
 
   defp valid_withdraw(amount, %Account{} = account) do
-    cond do
-      Money.zero?(amount) -> {:error, {:amount, "No value to withdraw"}}
-      Money.positive?(amount) -> {:error, {:amount, "Can`t withdraw a positive value"}}
-      amount
-      |> Money.abs()
-      |> Money.compare(get_current_amount(account.id)) == 1 -> {:error, {:amount, "Can`t withdraw more then you have"}}
-      true -> {:ok, amount}
+    if Money.zero?(amount) or
+       Money.positive?(amount) or
+       amount
+       |> Money.abs()
+       |> Money.compare(get_current_amount(account.id)) == 1 do
+      {:error, {:amount, "Invalid amount"}}
+    else
+      {:ok, amount}
     end
   end
 

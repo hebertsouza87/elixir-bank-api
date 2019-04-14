@@ -7,10 +7,12 @@ defmodule BankApi.Account.SignUp do
   alias BankApi.Account.UserQueries
 
   def create_account(params) do
-    params
-    |> UserQueries.create()
-    |> prepare_account_attrs()
-    |> AccountQueries.create()
+    with {:ok, user} <- UserQueries.create(params),
+         {:ok, account} <- user
+                           |> prepare_account_attrs()
+                           |> AccountQueries.create() do
+      {:ok, account}
+    end
   end
 
   defp prepare_account_attrs(user) do

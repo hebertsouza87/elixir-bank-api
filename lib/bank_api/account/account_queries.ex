@@ -12,7 +12,7 @@ defmodule BankApi.Account.AccountQueries do
   def create(attrs \\ %{}) do
     %Account{}
     |> Account.changeset(attrs)
-    |> Repo.insert!()
+    |> Repo.insert()
   end
 
   def get_active_by_id!(account_id) do
@@ -38,14 +38,17 @@ defmodule BankApi.Account.AccountQueries do
         limit: 1
       )
 
-    Repo.one!(query)
+    case Repo.one(query) do
+      %Account{} = account -> {:ok, account}
+      _ -> {:error, :not_found}
+    end
   end
 
   def set_active(number) do
     number
     |> find_created_by_number()
     |> Changeset.change(%{status: "ACTIVE"})
-    |> Repo.update!()
+    |> Repo.update()
   end
 
   def find_created_by_number(number) do

@@ -8,10 +8,10 @@ defmodule BankApi.Account.Accounts do
   alias BankApi.Banking.Transactions
 
   def activate(account_number) do
-    account_number
-    |> AccountQueries.set_active()
-    |> Transactions.deposit(100_000)
-    |> get_account()
+    with {:ok, account} <- AccountQueries.set_active(account_number),
+         {:ok, transaction} <- Transactions.deposit(account, 100_000) do
+      {:ok, account}
+    end
   end
 
   defp get_account(%Transaction{} = transaction) do
