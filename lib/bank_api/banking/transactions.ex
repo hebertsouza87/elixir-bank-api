@@ -13,54 +13,59 @@ defmodule BankApi.Banking.Transactions do
   end
 
   def deposit(%Account{} = account, amount) do
-    amount = Money.new(amount)
-    if Money.zero?(amount) do
-      raise "No value to deposit"
+    with {:ok, amount} <- amount
+                          |> Money.new()
+                          |> valid_deposit(),
+         {:ok, transaction} <- TransactionQueries.insert(
+           %{
+             account: account,
+             amount: amount,
+             type: "DEPOSIT"
+           }
+         ) do
+      Logger.info("Deposit of #{Money.to_string(amount)} in account_id #{account.id}.")
+      {:ok, transaction}
+  end
+  end
+
+  defp valid_deposit(amount) do
+    cond do
+      Money.zero?(amount) -> {:error, {:amount, "No value to deposit"}}
+      !Money.positive?(amount) -> {:error, {:amount, "Can`t deposit a negative value"}}
+      true -> {:ok, amount}
     end
-
-    if !Money.positive?(amount) do
-      raise "Can`t deposit a negative value"
-    end
-
-    Logger.info("Making a deposit of #{Money.to_string(amount)} in account_id #{account.id}.")
-
-    TransactionQueries.insert(
-      %{
-        account: account,
-        amount: amount,
-        type: "DEPOSIT"
-      }
-    )
   end
 
   def withdraw(%Account{} = account, amount) do
-    amount = Money.new(amount)
-    if Money.zero?(amount) do
-      raise "No value to withdraw"
+    with {:ok, amount} <- amount
+                          |> Money.new()
+                          |> valid_withdraw(account),
+         {:ok, transaction} <- TransactionQueries.insert(
+           %{
+             account: account,
+             amount: amount,
+             type: "WITHDRAW"
+           }
+         ) do
+      Logger.info("Withdraw of #{Money.to_string(amount)} in account_id #{account.id}.")
+      {:ok, transaction}
+    end
     end
 
-    if Money.positive?(amount) do
-      raise "Can`t withdraw a positive value"
+  defp valid_withdraw(amount, %Account{} = account) do
+    cond do
+      Money.zero?(amount) -> {:error, {:amount, "No value to withdraw"}}
+      Money.positive?(amount) -> {:error, {:amount, "Can`t withdraw a positive value"}}
+      amount
+      |> Money.abs()
+      |> Money.compare(get_current_amount(account.id)) == 1 -> {:error, {:amount, "Can`t withdraw more then you have"}}
+      true -> {:ok, amount}
     end
+  end
 
-    account_amount = account.id
-                     |> TransactionQueries.get_amount_in_account()
-                     |> Money.new()
-
-    if amount
-       |> Money.abs()
-       |> Money.compare(account_amount) == 1 do
-      raise "Can`t withdraw more then you have"
-    end
-
-    Logger.info("Making a withdraw of #{Money.to_string(amount)} in account_id #{account.id}.")
-
-    TransactionQueries.insert(
-      %{
-        account: account,
-        amount: amount,
-        type: "WITHDRAW"
-      }
-    )
+  defp get_current_amount(account_id) do
+    account_id
+    |> TransactionQueries.get_amount_in_account()
+    |> Money.new()
   end
 end

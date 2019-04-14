@@ -3,6 +3,8 @@ defmodule BankApiWeb.TransactionController do
 
   alias BankApi.Banking.Transactions
 
+  action_fallback(BankApiWeb.FallbackController)
+
   def withdraw(
         %{
           assigns: %{
@@ -11,8 +13,8 @@ defmodule BankApiWeb.TransactionController do
         } = conn,
         %{"amount" => amount}
       ) do
-    Transactions.withdraw(account, amount)
-    send_resp(conn, 202, "")
+    with {:ok, _} <- Transactions.withdraw(account, amount) do
+      send_resp(conn, 202, "") end
   end
 
   def deposit(

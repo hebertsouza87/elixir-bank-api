@@ -11,7 +11,7 @@ defmodule BankApi.Banking.TransactionQueries do
   def insert(attrs \\ %{}) do
     %Transaction{}
     |> Transaction.changeset(attrs)
-    |> Repo.insert!()
+    |> Repo.insert()
   end
 
   def get_amount_in_account(account_id) do
