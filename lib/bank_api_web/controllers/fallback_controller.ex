@@ -6,8 +6,8 @@ defmodule BankApiWeb.FallbackController do
   """
   use BankApiWeb, :controller
 
-  alias BankApiWeb.ErrorView
   alias BankApiWeb.ChangesetView
+  alias BankApiWeb.ErrorView
 
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn

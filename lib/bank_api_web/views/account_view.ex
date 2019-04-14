@@ -30,4 +30,28 @@ defmodule BankApiWeb.AccountView do
       }
     }
   end
+
+  def render("transaction.json", %{transaction: transaction}) do
+    %{
+      type: transaction.type,
+      amount: to_string(transaction.amount),
+      source_account: to_string(transaction.source_account),
+      destination_account: to_string(transaction.destination_account)
+    }
+  end
+
+  def render("transactions.json", report) do
+    %{
+      transactions:
+        render_many(
+          report.transactions,
+          BankApiWeb.AccountView,
+          "transaction.json",
+          as: :transaction
+        ),
+      total: report.transactions
+             |> Enum.reduce(Money.new(0), fn %{amount: amount}, acc -> Money.add(acc, amount) end)
+             |> to_string()
+    }
+  end
 end

@@ -24,4 +24,17 @@ defmodule BankApi.Banking.TransactionQueries do
 
     Repo.one!(query)
   end
+
+  def get_by_account_and_interval(account, start_date, end_date) do
+    query =
+      from(
+        t in Transaction,
+        where: t.account_id == ^account.id,
+        where: t.inserted_at >= ^start_date,
+        where: t.inserted_at <= ^end_date,
+        order_by: t.inserted_at
+      )
+
+    Repo.all(query)
+  end
 end

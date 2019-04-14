@@ -1,7 +1,7 @@
 defmodule BankApiWeb.Router do
   use BankApiWeb, :router
-  use Plug.ErrorHandler
-  use Sentry.Plug
+  #  use Plug.ErrorHandler
+  #  use Sentry.Plug
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -28,5 +28,6 @@ defmodule BankApiWeb.Router do
     post "/withdraw", TransactionController, :withdraw
     post "/deposit", TransactionController, :deposit
     post "/transfer", TransactionController, :transfer
+    get "/report", AccountController, :report
   end
 end

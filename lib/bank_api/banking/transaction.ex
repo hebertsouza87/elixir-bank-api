@@ -37,4 +37,24 @@ defmodule BankApi.Banking.Transaction do
     |> put_assoc(:account, account)
     |> validate_required(@required_fields)
   end
+
+  def report_changeset(attrs) do
+    fields = [:start_date, :end_date]
+
+    %{}
+    |> cast(attrs, fields)
+    |> validate_required(fields)
+    |> validate_dates
+  end
+
+  defp validate_dates(changeset) do
+    start_date = get_change(changeset, :start_date)
+    end_date = get_change(changeset, :end_date)
+
+    if start_date > end_date do
+      add_error(changeset, :start_date, "start_date is greater than end_date")
+    else
+      changeset
+    end
+  end
 end

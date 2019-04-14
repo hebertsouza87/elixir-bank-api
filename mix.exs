@@ -47,8 +47,8 @@ defmodule BankApi.MixProject do
       {:money, "~> 1.4"},
       {:timber, "~> 3.0"},
       {:sentry, "~> 6.4"},
+      {:timex, "~> 3.1"},
       {:excoveralls, "~> 0.10", only: :test},
-      {:timex, "~> 3.1", only: :test},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
     ]
   end

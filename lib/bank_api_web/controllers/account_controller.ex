@@ -17,4 +17,18 @@ defmodule BankApiWeb.AccountController do
       render(conn, "activate.json", account)
     end
   end
+
+  def report(
+        %{
+          assigns: %{
+            account: account
+          }
+        } = conn,
+
+        %{"start_date" => start_date, "end_date" => end_date}
+      ) do
+    with {:ok, transactions} <- Accounts.report(account, start_date, end_date) do
+      render(conn, "transactions.json", %{transactions: transactions})
+    end
+  end
 end

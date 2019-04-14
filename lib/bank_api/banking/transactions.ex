@@ -6,8 +6,8 @@ defmodule BankApi.Banking.Transactions do
   require Logger
 
   alias BankApi.Account.Account
-  alias BankApi.Banking.TransactionQueries
   alias BankApi.Account.AccountQueries
+  alias BankApi.Banking.TransactionQueries
 
   def deposit(nil, _) do
     nil
