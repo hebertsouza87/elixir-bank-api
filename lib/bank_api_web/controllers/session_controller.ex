@@ -3,6 +3,8 @@ defmodule BankApiWeb.SessionController do
 
   alias BankApi.Account.SignIn
 
+  action_fallback(BankApiWeb.FallbackController)
+
   def create(conn, params) do
     case SignIn.authenticate(
            %{

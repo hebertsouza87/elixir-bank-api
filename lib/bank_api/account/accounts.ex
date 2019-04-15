@@ -43,8 +43,8 @@ defmodule BankApi.Account.Accounts do
           |> Timex.end_of_day
 
     cond do
-      Timex.diff(start_date, end_date) > 0 -> {:error, start_date: "start_date is greater than end_date"}
-      Timex.diff(end_date, now) > 0 -> {:error, end_date: "end_date is greater than today"}
+      Timex.diff(start_date, end_date) > 0 -> {:error, {:start_date, "start_date is greater than end_date"}}
+      Timex.diff(end_date, now) > 0 -> {:error, {:end_date, "end_date is greater than today"}}
       true -> {:ok, ""}
     end
   end
