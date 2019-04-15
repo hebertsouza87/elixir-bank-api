@@ -25,6 +25,7 @@ defmodule BankApiWeb.Router do
   scope "/", BankApiWeb do
     pipe_through([:api, :authenticated])
 
+    delete "/session", SessionController, :delete
     post "/withdraw", TransactionController, :withdraw
     post "/deposit", TransactionController, :deposit
     post "/transfer", TransactionController, :transfer

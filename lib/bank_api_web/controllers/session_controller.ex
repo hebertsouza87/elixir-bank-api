@@ -19,4 +19,10 @@ defmodule BankApiWeb.SessionController do
                  |> send_resp(202, "")
     end
   end
+
+  def delete(conn, _params) do
+    conn
+    |> delete_session(:account_id)
+    |> send_resp(200, "")
+  end
 end
