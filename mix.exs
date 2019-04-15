@@ -5,7 +5,7 @@ defmodule BankApi.MixProject do
     [
       app: :bank_api,
       version: "0.1.0",
-      elixir: "~> 1.5",
+      elixir: "~> 1.8.1",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -26,7 +26,7 @@ defmodule BankApi.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/support", "test/factories"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -37,7 +37,7 @@ defmodule BankApi.MixProject do
       {:phoenix, "~> 1.4.2"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
-      {:ecto_sql, "~> 3.0"},
+      {:ecto_sql, "~> 3.1.0"},
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
@@ -47,8 +47,19 @@ defmodule BankApi.MixProject do
       {:money, "~> 1.4"},
       {:timber, "~> 3.0"},
       {:sentry, "~> 6.4"},
-      {:timex, "~> 3.1"},
+      {:timex, "~> 3.1"}
+    ] ++ test_deps() ++ dev_deps()
+  end
+
+  defp test_deps do
+    [
       {:excoveralls, "~> 0.10", only: :test},
+      {:ex_machina, "~> 2.3", only: :test}
+    ]
+  end
+
+  defp dev_deps do
+    [
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false}
     ]
   end
