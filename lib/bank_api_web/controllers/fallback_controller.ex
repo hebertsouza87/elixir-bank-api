@@ -19,6 +19,10 @@ defmodule BankApiWeb.FallbackController do
     send_resp(conn, 404, "")
   end
 
+  def call(conn, {:error, :forbidden}) do
+    send_resp(conn, 403, "")
+  end
+
   def call(conn, {:error, error}) do
     conn
     |> put_status(:bad_request)

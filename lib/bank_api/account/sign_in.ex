@@ -6,20 +6,18 @@ defmodule BankApi.Account.SignIn do
   alias BankApi.Account.AccountQueries
 
   def authenticate(%{number: number, password: password}) do
-    number
-    |> AccountQueries.find_active_by_number()
-    |> validate_password(password)
+    case AccountQueries.find_active_by_number(number) do
+      {:ok, account} -> validate_password(account, password)
+      {:error, _} -> {:error, :forbidden}
+    end
   end
 
-  defp validate_password(nil, _) do
-    nil
-  end
 
   defp validate_password({:ok, account}, password) do
     if Bcrypt.verify_pass(password, account.user.password) do
-      account
+      {:ok, account}
     else
-      nil
+      {:error, :forbidden}
     end
   end
 end

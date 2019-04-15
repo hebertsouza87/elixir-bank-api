@@ -6,17 +6,15 @@ defmodule BankApiWeb.SessionController do
   action_fallback(BankApiWeb.FallbackController)
 
   def create(conn, params) do
-    case SignIn.authenticate(
-           %{
-             number: params["account"],
-             password: params["password"]
-           }
-         ) do
-      nil -> conn
-             |> send_resp(403, "")
-      account -> conn
-                 |> put_session(:account_id, account.id)
-                 |> send_resp(202, "")
+    with {:ok, account} <- SignIn.authenticate(
+      %{
+        number: params["account"],
+        password: params["password"]
+      }
+    ) do
+      conn
+      |> put_session(:account_id, account.id)
+      |> send_resp(202, "")
     end
   end
 
