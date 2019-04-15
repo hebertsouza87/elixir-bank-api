@@ -6,4 +6,5 @@ defmodule BankApi.Factory do
 
   use ExMachina.Ecto, repo: BankApi.Repo
   use BankApi.AccountFactory
+  use BankApi.TransactionFactory
 end
