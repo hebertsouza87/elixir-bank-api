@@ -32,7 +32,6 @@ defmodule BankApiWeb.AccountView do
   end
 
   def render("transaction.json", %{transaction: transaction}) do
-    IO.inspect(transaction)
     %{
       type: transaction.type,
       amount: to_string(transaction.amount),
