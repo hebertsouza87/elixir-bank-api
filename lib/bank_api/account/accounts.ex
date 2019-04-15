@@ -16,13 +16,25 @@ defmodule BankApi.Account.Accounts do
   end
 
   def report(%Account{} = account, start_date, end_date) do
-    {:ok, start_date} = Timex.parse(start_date, "{YYYY}-{0M}-{0D}")
-    {:ok, end_date} = Timex.parse(end_date, "{YYYY}-{0M}-{0D}")
-    end_date = Timex.end_of_day(end_date)
+    start_date = convert_start_date(start_date)
+    end_date = convert_end_date(end_date)
 
     with {:ok, _} <- validate_date(start_date, end_date) do
       {:ok, TransactionQueries.get_by_account_and_interval(account, start_date, end_date)}
     end
+  end
+
+  defp convert_start_date(date) do
+    date
+    |> Timex.parse!("{YYYY}-{0M}-{0D}")
+    |> Timex.Timezone.convert("UTC")
+  end
+
+  defp convert_end_date(date) do
+    date
+    |> Timex.parse!("{YYYY}-{0M}-{0D}")
+    |> Timex.end_of_day()
+    |> Timex.Timezone.convert("UTC")
   end
 
   defp validate_date(start_date, end_date) do

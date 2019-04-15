@@ -32,15 +32,17 @@ defmodule BankApiWeb.AccountView do
   end
 
   def render("transaction.json", %{transaction: transaction}) do
+    IO.inspect(transaction)
     %{
       type: transaction.type,
       amount: to_string(transaction.amount),
       source_account: to_string(transaction.source_account),
-      destination_account: to_string(transaction.destination_account)
+      destination_account: to_string(transaction.destination_account),
+      date: convert_date(transaction.inserted_at)
     }
   end
 
-  def render("transactions.json", report) do
+  def render("report.json", report) do
     %{
       transactions:
         render_many(
@@ -53,5 +55,11 @@ defmodule BankApiWeb.AccountView do
              |> Enum.reduce(Money.new(0), fn %{amount: amount}, acc -> Money.add(acc, amount) end)
              |> to_string()
     }
+  end
+
+  defp convert_date(date) do
+    date
+    |> Timex.Timezone.convert("UTC")
+    |> Timex.format!("{0D}/{0M}/{YYYY} {h24}:{m}:{s}")
   end
 end

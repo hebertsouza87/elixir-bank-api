@@ -28,7 +28,7 @@ defmodule BankApiWeb.AccountController do
         %{"start_date" => start_date, "end_date" => end_date}
       ) do
     with {:ok, transactions} <- Accounts.report(account, start_date, end_date) do
-      render(conn, "transactions.json", %{transactions: transactions})
+      render(conn, "report.json", %{transactions: transactions})
     end
   end
 end
