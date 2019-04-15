@@ -1,0 +1,240 @@
+openapi: 3.0.0
+info:
+  title: Elixir Bank Api
+  description: Simulation of an bank api made on elixir
+  version: '0.1'
+servers:
+  - url: 'https://intense-scrubland-49795.herokuapp.com'
+paths:
+  /account:
+    post:
+      description: Create an Account with 'CREATED' status. Need activate to be used
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                document:
+                  type: string
+                name:
+                  type: string
+                email:
+                  type: string
+            examples:
+              '0':
+                value: "{\n\t\"name\": \"teste\",\n \t\"email\": \"teste@teste.com\",\n \t\"password\": \"123123\",\n \t\"document\": \"11122233344\"\n}"
+      responses:
+        '200':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/createAccount"
+              examples: {}
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+    servers:
+      - url: 'https://intense-scrubland-49795.herokuapp.com'
+
+  /account/{account}/activate:
+    put:
+      description: Activate an account
+      parameters:
+        - name: account
+          in: path
+          description: Account to be activated
+          required: true
+          schema:
+            type: integer
+            format: int64
+
+      responses:
+        '200':
+          description: Account activated
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+    servers:
+      - url: 'https://intense-scrubland-49795.herokuapp.com'
+
+  /session:
+    post:
+      description: Authenticate in a ACTIVE account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                account:
+                  type: string
+            examples:
+              '0':
+                value: "{\n\t\"account\": \"00000005\",\n \t\"password\": \"123123\"\n}"
+
+      responses:
+        '202':
+          description: Athenticated
+        '403':
+          description: Account/password invalid
+
+    delete:
+      description: Delete an open session
+      responses:
+        '200':
+          description: Session deleted
+    servers:
+      - url: 'https://intense-scrubland-49795.herokuapp.com'
+
+  /deposit:
+    post:
+      description: Make a deposit on a logged account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+            examples:
+              '0':
+                value: "{\n\t\"amount\": 1000\n}"
+      responses:
+        '202':
+          description: Deposit made
+        '400':
+          description: Bad request
+    servers:
+      - url: 'https://intense-scrubland-49795.herokuapp.com'
+
+  /report:
+    get:
+      description: Generate a report for a logged account
+      parameters:
+        - name: end_date
+          in: query
+          schema:
+            type: string
+          example: '2019-04-14'
+        - name: start_date
+          in: query
+          schema:
+            type: string
+          example: '2019-04-12'
+      responses:
+        '200':
+          description: Report
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: "#/components/schemas/report"
+              examples: {}
+    servers:
+      - url: 'https://intense-scrubland-49795.herokuapp.com'
+
+  /transfer:
+    post:
+      description: Transfer from logged account to another ACTIVE account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                destination:
+                  type: string
+            examples:
+              '0':
+                value: "{\n\t\"amount\": 1000,\n\t\"destination\": \"00000015\"\n}"
+      responses:
+        '202':
+          description: Transfer made
+        '400':
+          description: Bad request
+        '404':
+          description: Destination account not found
+    servers:
+      - url: 'https://intense-scrubland-49795.herokuapp.com'
+
+
+  /withdraw:
+    post:
+      description: Withdraw to an logged account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+            examples:
+              '0':
+                value: "{\n\t\"amount\": -10000\n}"
+
+      responses:
+        '202':
+          description: Withdraw made
+        '400':
+          description: Bad request
+          content:
+            application/json; charset=utf-8:
+              schema:
+                type: string
+              examples: {}
+    servers:
+      - url: 'https://intense-scrubland-49795.herokuapp.com'
+
+
+components:
+  schemas:
+    createAccount:
+      type: object
+      properties:
+        number:
+          type: string
+        status:
+          type: string
+        user:
+          type: object
+          properties:
+            document:
+              type: string
+            email:
+              type: string
+
+    report:
+      type: object
+      properties:
+        total:
+          type: string
+        transactions:
+          type: array
+          items:
+            type: object
+            properties:
+              amount:
+                type: string
+              date:
+                type: string
+              destination_account:
+                type: string
+              source_account:
+                type: string
+              type:
+                type: string
