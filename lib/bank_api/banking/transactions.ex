@@ -29,30 +29,32 @@ defmodule BankApi.Banking.Transactions do
   end
   end
 
-  def transfer(%Account{} = account, amount, destination_account) do
+  def transfer(%Account{} = account, amount, destination_account_number) do
     deposit_amount = Money.new(amount)
     withdraw_amount = Money.neg(deposit_amount)
 
-    with {:ok, _} <- AccountQueries.find_active_by_number(destination_account),
+    with {:ok, destination_account} <- AccountQueries.find_active_by_number(destination_account_number),
          {:ok, amount} <- valid_withdraw(withdraw_amount, account),
          {:ok, transaction} <- TransactionQueries.insert(
            %{
              account: account,
              amount: withdraw_amount,
              type: "TRANSFER",
-             destination_account: destination_account
+             destination_account: destination_account_number
            }
          ),
          {:ok, _} <- TransactionQueries.insert(
            %{
-             account: account,
+             account: destination_account,
              amount: deposit_amount,
              type: "TRANSFER",
              source_account: account.number,
            }
          ) do
       Logger.info(
-        "Transfer of #{Money.to_string(amount)} in account_id #{account.id} to account_number #{destination_account}."
+        "Transfer of #{Money.to_string(amount)} in account_id #{account.id} to account_number #{
+          destination_account_number
+        }."
       )
       {:ok, transaction}
     end
