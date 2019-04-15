@@ -14,4 +14,14 @@ config :bank_api,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5"),
   ssl: true
 
+config :sentry,
+       dsn: System.get_env("SENTRY_DNS"),
+       environment_name: :prod,
+       enable_source_code_context: true,
+       root_source_code_path: File.cwd!,
+       tags: %{
+         env: "production"
+       },
+       included_environments: [:prod]
+
 config :logger, level: String.to_atom(System.get_env("LOG_LEVEL") || "info")
