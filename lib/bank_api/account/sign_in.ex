@@ -3,9 +3,10 @@ defmodule BankApi.Account.SignIn do
   The SignIn context of sign ir.
   """
 
+  alias BankApi.Account.Account
   alias BankApi.Account.AccountQueries
 
-  def authenticate(%{number: number, password: password}) do
+  def authenticate(number, password) do
     case AccountQueries.find_active_by_number(number) do
       {:ok, account} -> validate_password(account, password)
       {:error, _} ->

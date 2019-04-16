@@ -25,11 +25,13 @@ defmodule BankApi.Account.User do
     user
     |> cast(attrs, [:name, :email, :document, :password])
     |> validate_required(@required_fields)
-    |> put_downcase_email()
-    |> put_password_hash()
+    |> validate_length(:password, min: 6, max: 10)
+    |> validate_length(:document, min: 6, max: 11)
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
     |> unique_constraint(:document)
+    |> put_downcase_email()
+    |> put_password_hash()
   end
 
   defp put_password_hash(changeset) do
