@@ -3,7 +3,6 @@ defmodule BankApi.Account.SignIn do
   The SignIn context of sign ir.
   """
 
-  alias BankApi.Account.Account
   alias BankApi.Account.AccountQueries
 
   def authenticate(number, password) do

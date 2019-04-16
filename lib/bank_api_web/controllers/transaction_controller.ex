@@ -14,7 +14,7 @@ defmodule BankApiWeb.TransactionController do
         %{"amount" => amount}
       ) do
     with {:ok, _} <- Transactions.withdraw(account, amount) do
-      send_resp(conn, 202, "")
+      send_resp(conn, 204, "")
     end
   end
 
@@ -27,7 +27,7 @@ defmodule BankApiWeb.TransactionController do
         %{"amount" => amount}
       ) do
     with {:ok, _} <- Transactions.deposit(account, amount) do
-      send_resp(conn, 202, "")
+      send_resp(conn, 204, "")
     end
   end
 
@@ -40,7 +40,7 @@ defmodule BankApiWeb.TransactionController do
         %{"amount" => amount, "destination" => destination_account}
       ) do
     with {:ok, _} <- Transactions.transfer(account, amount, destination_account) do
-      send_resp(conn, 202, "")
+      send_resp(conn, 204, "")
     end
   end
 end

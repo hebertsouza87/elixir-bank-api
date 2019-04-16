@@ -85,7 +85,7 @@ paths:
                 value: "{\n\t\"account\": \"00000005\",\n \t\"password\": \"123123\"\n}"
 
       responses:
-        '202':
+        '204':
           description: Athenticated
         '403':
           description: Account/password invalid
@@ -113,7 +113,7 @@ paths:
               '0':
                 value: "{\n\t\"amount\": 1000\n}"
       responses:
-        '202':
+        '204':
           description: Deposit made
         '400':
           description: Bad request
@@ -162,7 +162,7 @@ paths:
               '0':
                 value: "{\n\t\"amount\": 1000,\n\t\"destination\": \"00000015\"\n}"
       responses:
-        '202':
+        '204':
           description: Transfer made
         '400':
           description: Bad request
@@ -188,7 +188,7 @@ paths:
                 value: "{\n\t\"amount\": -10000\n}"
 
       responses:
-        '202':
+        '204':
           description: Withdraw made
         '400':
           description: Bad request

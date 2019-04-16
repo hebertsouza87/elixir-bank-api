@@ -26,7 +26,7 @@ defmodule BankApi.Account.User do
     |> cast(attrs, [:name, :email, :document, :password])
     |> validate_required(@required_fields)
     |> validate_length(:password, min: 6, max: 10)
-    |> validate_length(:document, min: 6, max: 11)
+    |> validate_length(:document, min: 6, max: 14)
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
     |> unique_constraint(:document)

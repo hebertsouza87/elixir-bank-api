@@ -9,7 +9,7 @@ defmodule BankApiWeb.SessionController do
     with {:ok, account} <- SignIn.authenticate(number, password) do
       conn
       |> put_session(:account_id, account.id)
-      |> send_resp(202, "")
+      |> send_resp(204, "")
     end
   end
 
